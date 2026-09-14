@@ -1,0 +1,8 @@
+{
+  "gpu_uuid": "GPU-5b052ad1-4272-40db-4b25-c930bf32b547",
+  "driver_version": "595.95",
+  "cuda_version": "13.2",
+  "vram_total": "24564 MiB",
+  "power_limit": "450.00 W",
+  "product_name": "NVIDIA GeForce RTX 4090"
+}

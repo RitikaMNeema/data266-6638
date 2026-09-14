@@ -1,0 +1,1 @@
+Please fill in the table yourself. You can consult the [Markdown syntax guide](https://www.markdownguide.org/extended-syntax/#tables) on how to create a table in Markdown.
