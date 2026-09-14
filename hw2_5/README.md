@@ -1,3 +1,7 @@
+Student: Ritika Mukesh Neema
+SJSU ID: 019306638
+SJSU ID Seed: 6638
+
 # HW2.5 GPU Benchmark Suite
 
 Verified with `py_compile` on all files and unit-checked math/logic on a
