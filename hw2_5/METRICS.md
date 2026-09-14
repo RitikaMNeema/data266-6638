@@ -1,6 +1,11 @@
 
 # METRICS.md — HW2.5
 
+Student: Ritika Mukesh Neema
+SJSU ID: 019306638
+SJSU ID Seed: 6638
+
+
 GPU: NVIDIA GeForce RTX 4090
 UUID: GPU-5b052ad1-4272-40db-4b25-c930bf32b547
 Driver: 595.95, CUDA 13.2 (see rtx4090_provenance_auto.json, rtx4090_nvidia_smi_q.txt)
