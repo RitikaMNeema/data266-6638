@@ -1,0 +1,117 @@
+Device: cpu
+Dataset length (chars): 1738
+Vocabulary size: 49
+Number of sliding-window training pairs: 1610
+
+Example 0
+input : 'ROMEO:\nBut, soft! what light through yonder window breaks?\nIt is the east, and Juliet is the sun.\nArise, fair sun, and kill the '
+target: 'OMEO:\nBut, soft! what light through yonder window breaks?\nIt is the east, and Juliet is the sun.\nArise, fair sun, and kill the e'
+
+Example 1
+input : 'OMEO:\nBut, soft! what light through yonder window breaks?\nIt is the east, and Juliet is the sun.\nArise, fair sun, and kill the e'
+target: 'MEO:\nBut, soft! what light through yonder window breaks?\nIt is the east, and Juliet is the sun.\nArise, fair sun, and kill the en'
+
+Total parameter count: 822,272
+Hidden dimension (d_model): 128
+Number of heads: 4
+Number of layers: 4
+Batches per epoch: 101
+
+Starting training (seed=6638)...
+epoch  1/8 | loss 2.6914
+epoch  2/8 | loss 2.1881
+epoch  3/8 | loss 1.9077
+epoch  4/8 | loss 1.5560
+epoch  5/8 | loss 1.1090
+epoch  6/8 | loss 0.7331
+epoch  7/8 | loss 0.4961
+epoch  8/8 | loss 0.3666
+
+Total training time: ~114s
+
+===== greedy =====
+ROMEO:
+By ame
+I know not how to tell thee who I am:
+My name, dear saint, is hateful to myself,
+Because it is an enemy to thee;
+Had I itt writtten, I'll a nem the word Ill be ne Romeoreo.
+
+JULIET:
+What man art thou that thus bescreen'd in night
+So stumblest oon my counsel?
+
+
+ROMEO:
+By a name
+I knot how to
+
+===== temperature_0.5 =====
+ROMEO:
+By ame that thu thus namyself, though not a Montague.
+What's Montague? is it nor hand, nor foot,
+Nor arm, nor face, nor any other part
+Belonging to a man.
+O be some other name!
+What's in a name? that which we call a rose
+By any other word would smell as sweet;
+So Romeo would, were he not Romeo call
+
+===== temperature_1.0 =====
+ROMEO:
+By ame thatll thu though not dont amee.
+Rameo, defor thar nor fothame an which is no part of thee
+By namy;
+Or, if thou not pamy d O, isher willl are is n.
+
+IET:
+I amis amy amy ene
+Thou at thy word woulld, sme she not wo bould,
+ner Retake d wit;
+Call non bet be ff.
+
+ROMEO:
+Ar, athat kis nor he.
+Ar m
+
+===== temperature_1.5 =====
+ROMEO:I nake thow toe d:
+Call me I but love, and I'll be new baptized;
+Henceforth I nevever !
+Be!
+AnN;
+And I'lltha be armne whice nos,
+dor nonJut be mootNo whers!
+Whatll ny Deiseny thor fa MEapart art Mond,
+OumartWLI's in ll mad nw nothe be
+Sout fittoo.
+Romeo, doff t thy name;
+'t I is namy Whou Caland pul
+
+===== top_k_5 =====
+ROMEO:
+By ame thatll thu though not a Montague.
+What's Montague? is itor nor hand, nor foot,
+Nor arm, nor face, nother any other part
+Belonging to ma man.
+O be some other name!
+What's in a name? that which we call a rose
+By any other word would smell Roveas sweet;
+So Romeo would, were he not Romeo call'd,
+
+===== top_k_20 =====
+ROMEO:
+By ame thatll thu though not dont amee.
+Rameo, defor thar nor fothame an which is no part of thee
+By namy;
+Or, if thou not pamy d O, isher willl are is n.
+
+IET:
+I amis amy amy ene
+Thou at thy word woulld, sme she not wo bould,
+ner Retake d wit;
+Call non bet be ff.
+
+ROMEO:
+Ar, athat kis nor he.
+Ar m
