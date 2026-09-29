@@ -1,0 +1,33 @@
+RUN_LOG - DATA266 LoRA fine-tuning on DialogSum (Ritika Mukesh Neema, SID4=6638)
+Environment: Google Colab | GPU: Tesla T4 | Python 3.13 | model google/flan-t5-small
+Seeds: SID4=6638 SEED=6638 SLICE=638 HP_ID=2 CLS_A=8 CLS_B=5
+
+[Step 1] Data
+  dataset: neil-code/dialogsum-test  train=1999 validation=499 test=499
+  training subset: 638 (shuffle seed 6638) | eval: first 100 of 499 test dialogues
+  demo test indices (seed 6638): [182, 442]
+
+[Step 2] Baseline inference (no fine-tuning)
+  idx 182: "W: Hi, Jack. How were your classes this semester?"
+  idx 442: "M: I don't think I'd have been fined if I didn't ask someone for directions. (repeats)"
+  ROUGE (100 test): rouge1=0.1483 rouge2=0.0474 rougeL=0.1364
+
+[Step 3-5] LoRA r=16 (alpha=32, dropout=0.05, target q,v)
+  total params=77,649,280 trainable=688,128 (0.886%)
+  epochs=5 batch=8 lr=1e-3 | final logged loss=1.4504 mean loss=1.5184 | time=2.0 min
+  adapters saved: outputs/lora_adapters_r16
+  idx 182: "Jack likes his poli-sci class. #Person1# thinks he will check it out."
+  idx 442: "#Person1# blames #Person2#'s fault for giving money to a policeman. #Person2# blames #Person1#'s fault because #Person1# didn't suggest driving instead of taking the train."
+  ROUGE (100 test): rouge1=0.3498 rouge2=0.1056 rougeL=0.2831
+
+[Step 7] LoRA r=4 (alpha=8, dropout=0.05, target q,v)
+  total params=77,133,184 trainable=172,032 (0.223%)
+  epochs=5 batch=8 lr=1e-3 | final logged loss=1.5341 mean loss=1.5895 | time=2.0 min
+  adapters saved: outputs/lora_adapters_r4
+  idx 182: "Jack likes his poli-sci class. #Person1# thinks #Person2# will check it out."
+  idx 442: "#Person1# blames #Person2#'s fault for giving money to a policeman. #Person2# suggests driving instead of taking the train instead of taking the train."
+  ROUGE (100 test): rouge1=0.3443 rouge2=0.1058 rougeL=0.2815
+
+[Issues]
+  First run of the r=16 cell failed: ImportError - torchao 0.10.0 incompatible with installed peft (needs >=0.16.0).
+  Fix: pip install -U torchao peft, restart session, rerun. Second run completed without errors.
