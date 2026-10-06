@@ -1,0 +1,63 @@
+RUN_LOG.txt — STL-10 SSL, SID4=6638, SEED=6638
+train (5000, 3, 96, 96) | unlabeled (100000, 3, 96, 96) | test (8000, 3, 96, 96)
+10% labeled subset: 500 images, class counts = [50, 50, 50, 50, 50, 50, 50, 50, 50, 50]
+[A] epoch 1/15 loss=2.3343
+[A] epoch 2/15 loss=1.8264
+[A] epoch 3/15 loss=1.6396
+[A] epoch 4/15 loss=1.4970
+[A] epoch 5/15 loss=1.4409
+[A] epoch 6/15 loss=1.3594
+[A] epoch 7/15 loss=1.2884
+[A] epoch 8/15 loss=1.1966
+[A] epoch 9/15 loss=1.1184
+[A] epoch 10/15 loss=1.1099
+[A] epoch 11/15 loss=1.1646
+[A] epoch 12/15 loss=1.1518
+[A] epoch 13/15 loss=1.0054
+[A] epoch 14/15 loss=0.9961
+[A] epoch 15/15 loss=0.8831
+[A] Supervised (10% labels) TEST ACC = 38.12%  (7s)
+[B] epoch 1/15 rot-loss=1.0169 rot-acc=57.1% (24s)
+[B] epoch 2/15 rot-loss=0.8299 rot-acc=66.2% (47s)
+[B] epoch 3/15 rot-loss=0.7455 rot-acc=70.1% (71s)
+[B] epoch 4/15 rot-loss=0.6846 rot-acc=72.9% (96s)
+[B] epoch 5/15 rot-loss=0.6421 rot-acc=74.7% (120s)
+[B] epoch 6/15 rot-loss=0.6066 rot-acc=76.1% (144s)
+[B] epoch 7/15 rot-loss=0.5728 rot-acc=77.7% (169s)
+[B] epoch 8/15 rot-loss=0.5507 rot-acc=78.7% (194s)
+[B] epoch 9/15 rot-loss=0.5281 rot-acc=79.4% (218s)
+[B] epoch 10/15 rot-loss=0.5077 rot-acc=80.5% (242s)
+[B] epoch 11/15 rot-loss=0.4909 rot-acc=81.0% (266s)
+[B] epoch 12/15 rot-loss=0.4756 rot-acc=81.7% (290s)
+[B] epoch 13/15 rot-loss=0.4577 rot-acc=82.4% (315s)
+[B] epoch 14/15 rot-loss=0.4483 rot-acc=82.7% (339s)
+[B] epoch 15/15 rot-loss=0.4367 rot-acc=83.2% (363s)
+[B rotation] linear probe: epochs=20 final train loss=0.7535 | TEST ACC = 49.31% (encoder verified frozen)
+[C] epoch 1/20 NT-Xent=5.3746 contrastive-top1=3.8% (10s)
+[C] epoch 2/20 NT-Xent=4.5784 contrastive-top1=12.6% (20s)
+[C] epoch 3/20 NT-Xent=4.1745 contrastive-top1=21.3% (30s)
+[C] epoch 4/20 NT-Xent=3.7976 contrastive-top1=33.8% (41s)
+[C] epoch 5/20 NT-Xent=3.5627 contrastive-top1=42.1% (51s)
+[C] epoch 6/20 NT-Xent=3.4228 contrastive-top1=48.7% (61s)
+[C] epoch 7/20 NT-Xent=3.2951 contrastive-top1=54.3% (71s)
+[C] epoch 8/20 NT-Xent=3.2056 contrastive-top1=58.4% (81s)
+[C] epoch 9/20 NT-Xent=3.1141 contrastive-top1=63.1% (91s)
+[C] epoch 10/20 NT-Xent=3.0612 contrastive-top1=64.9% (101s)
+[C] epoch 11/20 NT-Xent=2.9988 contrastive-top1=68.3% (111s)
+[C] epoch 12/20 NT-Xent=2.9419 contrastive-top1=70.7% (121s)
+[C] epoch 13/20 NT-Xent=2.9016 contrastive-top1=72.1% (131s)
+[C] epoch 14/20 NT-Xent=2.8748 contrastive-top1=73.5% (141s)
+[C] epoch 15/20 NT-Xent=2.8441 contrastive-top1=74.8% (152s)
+[C] epoch 16/20 NT-Xent=2.8040 contrastive-top1=76.7% (162s)
+[C] epoch 17/20 NT-Xent=2.7825 contrastive-top1=77.2% (172s)
+[C] epoch 18/20 NT-Xent=2.7383 contrastive-top1=79.2% (182s)
+[C] epoch 19/20 NT-Xent=2.7292 contrastive-top1=79.3% (192s)
+[C] epoch 20/20 NT-Xent=2.7040 contrastive-top1=80.4% (202s)
+[C SimCLR] linear probe: epochs=20 final train loss=0.4555 | TEST ACC = 53.80% (encoder verified frozen)
+query test indices: [3808, 2548, 3442] | classes: ['cat', 'deer', 'bird']
+[D] Supervised: kNN precision@5 over all test images = 36.36%
+[D] Rotation SSL: kNN precision@5 over all test images = 40.96%
+[D] SimCLR: kNN precision@5 over all test images = 47.46%
+A  Supervised, 10% labels (end-to-end)        test acc = 38.12%
+B  Rotation SSL + frozen linear probe         test acc = 49.31%
+C  SimCLR (τ=0.2) + frozen linear probe       test acc = 53.80%
