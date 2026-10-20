@@ -1,0 +1,50 @@
+[06:19:05] SID4=6638 SEED=6638 SLICE=638 HP_ID=2 CLS_A=8 CLS_B=5
+[06:19:05] torch=2.11.0+cu130 device=cuda (Tesla T4)
+[06:19:14] train=60000 test=10000 | BATCH=128 EPOCHS=20 LR=0.001 LATENT=32
+[06:19:14] FC-AE params=1,083,696 | VAE params=1,091,920
+[06:19:24] FC-AE epoch 01/20 train_loss=0.03313 test_loss=0.02027 test_MSE=0.02027
+[06:19:33] FC-AE epoch 02/20 train_loss=0.01797 test_loss=0.01619 test_MSE=0.01619
+[06:19:42] FC-AE epoch 03/20 train_loss=0.01527 test_loss=0.01461 test_MSE=0.01461
+[06:19:51] FC-AE epoch 04/20 train_loss=0.01366 test_loss=0.01320 test_MSE=0.01320
+[06:20:00] FC-AE epoch 05/20 train_loss=0.01257 test_loss=0.01228 test_MSE=0.01228
+[06:20:10] FC-AE epoch 06/20 train_loss=0.01186 test_loss=0.01166 test_MSE=0.01166
+[06:20:19] FC-AE epoch 07/20 train_loss=0.01132 test_loss=0.01123 test_MSE=0.01123
+[06:20:29] FC-AE epoch 08/20 train_loss=0.01087 test_loss=0.01110 test_MSE=0.01110
+[06:20:40] FC-AE epoch 09/20 train_loss=0.01046 test_loss=0.01052 test_MSE=0.01052
+[06:20:49] FC-AE epoch 10/20 train_loss=0.01011 test_loss=0.01015 test_MSE=0.01015
+[06:20:58] FC-AE epoch 11/20 train_loss=0.00977 test_loss=0.00988 test_MSE=0.00988
+[06:21:07] FC-AE epoch 12/20 train_loss=0.00952 test_loss=0.00963 test_MSE=0.00963
+[06:21:17] FC-AE epoch 13/20 train_loss=0.00927 test_loss=0.00940 test_MSE=0.00940
+[06:21:27] FC-AE epoch 14/20 train_loss=0.00905 test_loss=0.00921 test_MSE=0.00921
+[06:21:36] FC-AE epoch 15/20 train_loss=0.00885 test_loss=0.00908 test_MSE=0.00908
+[06:21:46] FC-AE epoch 16/20 train_loss=0.00869 test_loss=0.00898 test_MSE=0.00898
+[06:21:56] FC-AE epoch 17/20 train_loss=0.00855 test_loss=0.00878 test_MSE=0.00878
+[06:22:05] FC-AE epoch 18/20 train_loss=0.00842 test_loss=0.00866 test_MSE=0.00866
+[06:22:14] FC-AE epoch 19/20 train_loss=0.00825 test_loss=0.00862 test_MSE=0.00862
+[06:22:24] FC-AE epoch 20/20 train_loss=0.00818 test_loss=0.00843 test_MSE=0.00843
+[06:22:24] FC-AE finished in 190.5s
+[06:22:34] VAE epoch 01/20 train_loss=290.88404 test_loss=261.90920 test_MSE=0.02768
+[06:22:45] VAE epoch 02/20 train_loss=254.62261 test_loss=252.22392 test_MSE=0.02213
+[06:22:54] VAE epoch 03/20 train_loss=248.92680 test_loss=249.13588 test_MSE=0.02012
+[06:23:04] VAE epoch 04/20 train_loss=246.62870 test_loss=247.48078 test_MSE=0.01922
+[06:23:14] VAE epoch 05/20 train_loss=245.06698 test_loss=246.37442 test_MSE=0.01835
+[06:23:24] VAE epoch 06/20 train_loss=243.91640 test_loss=245.50551 test_MSE=0.01778
+[06:23:33] VAE epoch 07/20 train_loss=242.99737 test_loss=244.25161 test_MSE=0.01706
+[06:23:43] VAE epoch 08/20 train_loss=242.14910 test_loss=243.61723 test_MSE=0.01669
+[06:23:53] VAE epoch 09/20 train_loss=241.40911 test_loss=242.96309 test_MSE=0.01636
+[06:24:03] VAE epoch 10/20 train_loss=240.71826 test_loss=242.16510 test_MSE=0.01602
+[06:24:13] VAE epoch 11/20 train_loss=240.26170 test_loss=242.02458 test_MSE=0.01590
+[06:24:23] VAE epoch 12/20 train_loss=239.96198 test_loss=241.94264 test_MSE=0.01583
+[06:24:33] VAE epoch 13/20 train_loss=239.65083 test_loss=241.68255 test_MSE=0.01570
+[06:24:43] VAE epoch 14/20 train_loss=239.30225 test_loss=241.15810 test_MSE=0.01547
+[06:24:52] VAE epoch 15/20 train_loss=239.10767 test_loss=241.02923 test_MSE=0.01544
+[06:25:02] VAE epoch 16/20 train_loss=238.86215 test_loss=240.78804 test_MSE=0.01529
+[06:25:12] VAE epoch 17/20 train_loss=238.68486 test_loss=240.67762 test_MSE=0.01525
+[06:25:21] VAE epoch 18/20 train_loss=238.49055 test_loss=240.38530 test_MSE=0.01515
+[06:25:31] VAE epoch 19/20 train_loss=238.31427 test_loss=240.42966 test_MSE=0.01516
+[06:25:41] VAE epoch 20/20 train_loss=238.19317 test_loss=240.32872 test_MSE=0.01510
+[06:25:41] VAE finished in 196.5s
+[06:25:44] TEST recon MSE/pixel  FC-AE=0.00843 (PSNR 20.74 dB) | VAE=0.01510 (PSNR 18.21 dB)
+[06:25:44] VAE test: BCE/img=228.39  KL/img=11.93  negative ELBO/img=240.32
+[06:26:17] Linear probe on frozen 32-d latents (test acc): FC-AE=0.8267 | VAE (posterior mean)=0.8068
+[06:27:05] Wrote METRICS.md and RUN_LOG.txt
