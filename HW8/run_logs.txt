@@ -1,0 +1,33 @@
+# Run logs: Mini DDPM -> DDIM on MNIST
+# Source: executed notebook (Colab, CUDA GPU). Config: T=100, beta 1e-4 -> 0.02 linear, batch 128, 50 epochs, Adam lr 2e-4, EMA 0.999
+# Sampling timings below are read from the sample-grid titles (16 images, same x_T): DDPM-100 0.31s, DDIM-50 0.19s, DDIM-20 0.06s
+
+[cell 1]
+device: cuda
+alpha_bar[0]=0.9999  alpha_bar[T-1]=0.363563  (should be ~0 so x_T ~ N(0,I))
+
+[cell 2]
+60000 training images; 468 batches/epoch
+
+[cell 7]
+conv layers: 8 | parameters: 1.82M
+
+[cell 8]
+epoch   1/50  loss 0.1650  (24s)
+epoch   6/50  loss 0.0685  (148s)
+epoch  11/50  loss 0.0627  (281s)
+epoch  16/50  loss 0.0600  (412s)
+epoch  21/50  loss 0.0584  (544s)
+epoch  26/50  loss 0.0572  (676s)
+epoch  31/50  loss 0.0564  (809s)
+epoch  36/50  loss 0.0560  (941s)
+epoch  41/50  loss 0.0556  (1073s)
+epoch  46/50  loss 0.0551  (1205s)
+epoch  50/50  loss 0.0548  (1311s)
+sampling with EMA weights
+
+[cell 16]
+DDIM 50 vs DDIM 50 (same noise, rerun):    MSE = 0.000000   <- deterministic
+DDPM vs DDPM   (same x_T, diff. seeds):    MSE = 0.371435   <- stochastic
+DDIM 50 steps vs DDIM 100-step reference:  MSE = 0.024734
+DDIM 20 steps vs DDIM 100-step reference:  MSE = 0.215921
