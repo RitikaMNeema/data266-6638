@@ -1,0 +1,31 @@
+RUN_LOG.txt - HW4.5 (Ritika Mukesh Neema, SID 019306638, SEED 6638, rows 638-5637)
+Data: cardiffnlp/tweet_eval / sentiment / train, 5,000 rows from SLICE=638, split 70/15/15 (3500/750/750)
+Part C skipped (optional).
+
+== Card 1: NVIDIA A100-SXM4-40GB (Google Colab) - notebook HW4_5_colab_3.ipynb ==
+Date: 11/02/2026   nvidia-smi -L: GPU-a7917fc8-eb36-56a0-5ead-9ce94cf71b01
+python train_bert.py --tag baseline                              # HW4.a fine-tune, bs16, 3 epochs
+python batch_scaling.py --start 8                                # Part A, bs 8..256, OOM at 512
+python memory_techniques.py                                      # Part B at bs16 (baseline/AMP/ckpt/accum x4/8-bit/combo)
+python vllm_bench.py --model Qwen/Qwen2.5-0.5B-Instruct          # Part D: HF generate + vLLM bs 1/8/32
+python kv_cache.py theory ; python kv_cache.py probe             # Part D/E KV cache (engine log: 2,588,384 tokens)
+python gpu_hours.py ...                                          # 0.015 GPU-h per fine-tune
+
+== Card 2: Tesla T4 (Google Colab) - notebook HW4_5_addon_colab-2.ipynb ==
+Date: 2026-11-03   nvidia-smi -L: GPU-45a3688f-91da-aece-1fc4-c05b615f9aa2   driver 580.82.07
+torch 2.11.0+cu130, transformers 5.22.0
+python train_bert.py --tag baseline --save-dir saved_bert        # HW4.a fine-tune + save
+python custom_inference.py --model-dir saved_bert "..." x4       # reload in fresh process, custom tweets
+python batch_scaling.py --start 8 --max 4096                     # Part A, OOM at 256
+python part_b_full.py                                            # Part B: per-technique max batch (AMP 256, ckpt 512, 8-bit 128),
+                                                                 #   accumulation 16x4 vs bs64, 16x16 vs bs256 (OOM), AMP+8-bit combos
+python vllm_demo.py --model Qwen/Qwen2.5-1.5B-Instruct --prompt ... # HW4.a-2: other model, own prompts
+python vllm_bench.py --model Qwen/Qwen2.5-0.5B-Instruct --max-new 128 --n-prompts 64 --gpu-util 0.80 --max-model-len 2048
+python kv_cache.py theory ... ; python kv_measure.py --batch 8 --lengths 512..16384   # measured KV matches 12,288 B/token
+python kv_cache.py probe --gpu-util 0.08                         # FAILED at all lengths: engine cannot start in ~1.2 GB (not a KV limit)
+python gpu_hours.py                                              # 0.067 GPU-h per fine-tune
+
+== Failures / reruns ==
+- First T4 and A100 runs used SEED 42 and rows 0-4999 (wrong); rerun with SEED 6638 / rows 638-5637 (A100 colab_3). Earlier runs not used for any reported number.
+- `--extra "--amp"` broke argparse; fixed as `--extra=--amp`.
+- KV probe at gpu_util 0.08 failed (engine start-up), so longest-context result comes from the engine's reported KV capacity.
