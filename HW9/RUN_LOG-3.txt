@@ -1,0 +1,18 @@
+[01:14:42] device=cuda torch=2.11.0+cu130 seed=6638
+[01:14:42] gpu=NVIDIA A100-SXM4-40GB
+[01:15:02] latent shape=(512, 4, 16, 16)  scaled latent std=1.252
+[01:15:02] VAE reconstruction MSE: 0.00077 ([-1,1] scale) | 0.00019 ([0,1] scale)
+[01:16:07] encoded 60000 train images in 65s; latent mean=-0.045 std=1.260
+[01:16:09] U-Net params: 14.49M | output shape (2, 4, 16, 16)
+[01:16:32] epoch 01/50 loss=0.3594 elapsed=22s
+[01:18:19] epoch 06/50 loss=0.1213 elapsed=130s
+[01:20:06] epoch 11/50 loss=0.1104 elapsed=237s
+[01:21:54] epoch 16/50 loss=0.1042 elapsed=345s
+[01:23:41] epoch 21/50 loss=0.1019 elapsed=451s
+[01:25:28] epoch 26/50 loss=0.1001 elapsed=558s
+[01:27:15] epoch 31/50 loss=0.0963 elapsed=665s
+[01:29:02] epoch 36/50 loss=0.0976 elapsed=772s
+[01:30:48] epoch 41/50 loss=0.0956 elapsed=879s
+[01:32:35] epoch 46/50 loss=0.0944 elapsed=986s
+[01:34:01] epoch 50/50 loss=0.0932 elapsed=1072s
+[01:34:16] saved samples_64.png
