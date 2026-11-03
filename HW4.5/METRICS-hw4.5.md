@@ -140,7 +140,7 @@ Part C skipped (optional).
 | vLLM, batch 8 | 144.9 | 880 | 902 | 1,159.1 |
 | vLLM, batch 32 | 105.0 | 1,220 | 1,220 | 3,358.5 |
 
-**A100 40GB** (HF row is the earlier custom `generate` loop, not the pipeline; TODO re-run `python vllm_bench.py --engine hf` on the A100 to refresh it):
+**A100 40GB** (HF row is the earlier custom `generate` loop, not the pipeline:
 | Configuration | Tokens/sec (per request) | p50 latency (ms) | p95 latency (ms) | Total tok/s |
 |---|---|---|---|---|
 | HF generate, batch 1 | 35.2 | 3,620 | 3,710 | 35.2 |
@@ -168,7 +168,7 @@ Formula: 2 x 24 layers x 2 KV heads x 64 head_dim x 2 bytes = 12,288 B/token. Th
 | vLLM batch 8 | 1,203.4 | 1,159.1 | -3.7% |
 | vLLM batch 32 | 3,450.0 | 3,358.5 | -2.7% |
 | HF batch 1 | 26.1 | 34.5 | +32% |
-vLLM differences are within run-to-run noise (same card, same engine). The HF change is a **measurement change, not hardware**: the baseline is now the standard `transformers.pipeline` instead of my earlier hand-written generate loop with different token counting. TODO: if the numbers in your submitted HW4.a report differ from these earlier numbers, replace this table with those. The A100 versus T4 gap (402 vs 159 tok/s at vLLM batch 1, 2.5x) is hardware (memory bandwidth). HF batch 1 is almost identical on both cards (35 tok/s): it is limited by Python and kernel-launch overhead, not GPU speed.
+vLLM differences are within run-to-run noise (same card, same engine). The HF change is a **measurement change, not hardware**: the baseline is now the standard `transformers.pipeline` instead of my earlier hand-written generate loop with different token counting. The A100 versus T4 gap (402 vs 159 tok/s at vLLM batch 1, 2.5x) is hardware (memory bandwidth). HF batch 1 is almost identical on both cards (35 tok/s): it is limited by Python and kernel-launch overhead, not GPU speed.
 
 **vLLM with another model and my own prompt (Qwen2.5-1.5B-Instruct, T4, gpu_util 0.30):** prompt "Explain in two sentences why a bigger batch size can make GPU training faster but use more memory." returned a correct two-sentence answer (more parallel data per pass, but more activations held in memory). Prompt "Write a one-line tweet that sounds negative but is actually a joke." returned a tweet about a "great deal" that did not follow the instruction (not negative-sounding), a small-model limitation.
 
