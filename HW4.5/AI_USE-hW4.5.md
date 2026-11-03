@@ -1,8 +1,7 @@
 # AI_USE.md - HW4.5 (DRAFT: edit every section into your own words before submitting)
 
 ## Tools used
-Claude (Anthropic) via Claude Code/claude.ai: wrote and debugged the HW4.5 scripts (train_bert.py, batch_scaling.py, part_b_full.py, vllm_bench.py, kv_cache.py, kv_measure.py), generated the Colab notebooks, and drafted METRICS.md from my notebook outputs. TODO: add anything else you used.
-
+Claude (Anthropic) via Claude Code/claude.ai: wrote and debugged the HW4.5 scripts (train_bert.py, batch_scaling.py, part_b_full.py, vllm_bench.py, kv_cache.py, kv_measure.py), generated the Colab notebooks, and drafted METRICS.md from my notebook outputs.
 ## What I did myself
  chose the GPUs/Colab runtimes, ran every notebook, supplied the course SEED/SLICE convention, read the numbers, checked METRICS.md against the outputs, wrote the final analysis/conclusions.
 
