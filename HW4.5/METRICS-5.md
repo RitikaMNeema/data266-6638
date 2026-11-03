@@ -5,7 +5,7 @@
 |---|---|---|
 | `nvidia-smi -L` | GPU 0: Tesla T4 (UUID: GPU-45a3688f-91da-aece-1fc4-c05b615f9aa2) | GPU 0: NVIDIA A100-SXM4-40GB (UUID: GPU-a7917fc8-eb36-56a0-5ead-9ce94cf71b01) |
 | VRAM | 15,360 MiB | 40,960 MiB |
-| Driver / torch / transformers | 580.82.07 / 2.11.0+cu130 / 5.22.0 | TODO: fill from the A100 notebook (`nvidia-smi`, `torch.__version__`) |
+| Driver / torch / transformers | 580.82.07 / 2.11.0+cu130 / 5.22.0 (checked in a later Colab A100 session; same as the T4 run) (`nvidia-smi`, `torch.__version__`) |
 | Platform | Google Colab (no reservation needed) | Google Colab (no reservation needed) |
 
 **Data (identical for HW4.a and HW4.5):** `cardiffnlp/tweet_eval`, config `sentiment`, split `train`, **rows 638-5637** (5,000 consecutive rows from SLICE = 638), split 70/15/15 = 3,500 / 750 / 750 with **SEED = 6638** (also the training seed). No rows picked or reshuffled for HW4.5.
@@ -187,5 +187,4 @@ GPU-hours = (samples per epoch x epochs) / (samples per second) / 3600 = 10,464 
 
 Cost in Colab units (third-party observed rates, check your resources panel): T4 about 1.19 units/h and A100 about 5.4 units/h, so both come to roughly 0.08 units per fine-tune (the A100 is about 4.3x faster).
 
-## 7. Deliverable checklist
-- Repo tagged `hw4-5` (TODO) | UUID captures: T4 and A100 lines in section 0 plus `nvidia_smi_L.txt` (T4) | Figures: `fig_partA_throughput_memory_both_cards.png`, `fig_partB_T4_techniques.png` | `RUN_LOG.txt` (TODO) | `AI_USE.md` (TODO, your own words) | Reservation record: Colab, none | GPU-hour record: section 6.
+
