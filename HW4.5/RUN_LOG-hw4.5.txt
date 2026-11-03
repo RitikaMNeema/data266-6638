@@ -3,7 +3,7 @@ Data: cardiffnlp/tweet_eval / sentiment / train, 5,000 rows from SLICE=638, spli
 Part C skipped (optional).
 
 == Card 1: NVIDIA A100-SXM4-40GB (Google Colab) - notebook HW4_5_colab_3.ipynb ==
-Date: 11/02/2026   nvidia-smi -L: GPU-a7917fc8-eb36-56a0-5ead-9ce94cf71b01
+Date: 2026-11-03  nvidia-smi -L: GPU-a7917fc8-eb36-56a0-5ead-9ce94cf71b01
 python train_bert.py --tag baseline                              # HW4.a fine-tune, bs16, 3 epochs
 python batch_scaling.py --start 8                                # Part A, bs 8..256, OOM at 512
 python memory_techniques.py                                      # Part B at bs16 (baseline/AMP/ckpt/accum x4/8-bit/combo)
