@@ -1,0 +1,119 @@
+RUN LOG — DATA 266: Improving RAG with Reranking, Chunking, and Conversational Memory
+Author: Ritika Mukesh Neema
+Final notebook: DATA266_RAG_Reranking_Chunking_Memory_final.ipynb
+Environment: Google Colab, GPU runtime (torch device = cuda, T4), Python 3, SEED = 6638
+Libraries: datasets, sentence-transformers, chromadb, rank_bm25, pandas, numpy, matplotlib
+
+======================================================================
+RUN HISTORY
+======================================================================
+Run 1  (notebook returned 2026-11-07 ~10:47 CT)  version 1
+  Config: 150-word chunks (30-word overlap), queries Q1–Q4 only.
+  Outcome: completed, no errors. Every config hit P@5 ~1.0 and MRR 1.0 on
+  single-turn queries; reranking and chunking could not be told apart.
+  Also found: 15.8% (S1) and 11.2% (S2) of chunks exceeded MiniLM's
+  256-token limit, so their ends were never embedded.
+  Action: chunk size cut to 120 words (24-word overlap); detail queries
+  Q5–Q8 with a stricter rubric added; tie-aware "best config" line.
+
+Run 2  (notebook returned 2026-11-07 ~11:23 CT)  version 2
+  Outcome: completed, no errors. Methods now separate on detail queries.
+  Rubric check flagged Q8 (2 relevant chunks); kept as-is and documented.
+  Action: Section 10 discussion written from the measured numbers.
+
+Run 3  (notebook returned 2026-11-10 ~11:21 PT)  version 3 = FINAL
+  Added Section 11 (hybrid BM25+dense, BGE reranker, anchored memory,
+  topic-switch conversation C3). Sections 1–10 unchanged.
+  Outcome: completed, no errors; Sections 1–10 reproduced Run 2 exactly.
+  Execution counts 1–25 are contiguous (a single top-to-bottom run).
+
+======================================================================
+FINAL RUN (Run 3) — CELL-BY-CELL LOG
+======================================================================
+[exec 1] pip install datasets sentence-transformers chromadb
+  WARN  pip dependency-resolver notices (python-dateutil, oauthlib,
+        opentelemetry, pyarrow vs preinstalled Colab packages). Not used
+        by this notebook; no effect on results.
+
+[exec 2] Config
+  device: cuda | SEED=6638 | N_DOCS=100 | CHUNK_WORDS=120 | OVERLAP_WORDS=24
+  OVERLAP_SENTS=1 | CANDIDATES=20 | KS=[3,5,10] | K_MAIN=5
+
+[exec 3] Load dataset  ccdv/arxiv-summarization, config "document"
+  Downloaded 15 train shards + validation + test parquet files.
+  Splits: train 203,037 | validation 6,436 | test 6,440
+  Loaded train[:100] -> Dataset(features=['article','abstract'], num_rows=100)
+  WARN  unauthenticated HF Hub requests (no HF_TOKEN); harmless.
+
+[exec 4] Preprocess
+  docs: 100 | words/doc mean 4,937, min 446, max 24,354
+  CHECK placeholders (@xmath/@xcite) left: 0  -> PASS
+
+[exec 5] Chunking
+  S1 fixed window     : 5,164 chunks | mean 120.0 words | 7% end on sentence
+  S2 sentence-aware   : 5,723 chunks | mean 106.3 words (min 8, max 120) | 98% end on sentence
+  CHECK all chunks <= 120 words -> PASS
+
+[exec 6] Load models: all-MiniLM-L6-v2, ms-marco-MiniLM-L-6-v2
+  Token check: S1 mean 187 tokens, 7.8% > 256 | S2 mean 165 tokens, 5.7% > 256
+  WARN  transformers: "sequence length 259 > 256" (expected for the
+        over-limit chunks; they are truncated at embedding time)
+
+[exec 7] Index in ChromaDB (cosine HNSW, ./chroma_arxiv)
+  S1: indexed 5,164 chunks in 10.3s
+  S2: indexed 5,723 chunks in 9.5s
+  CHECK collection count == chunk count -> PASS (both)
+  CHECK self-retrieval at rank 1 -> S1 OK, S2 OK
+
+[exec 8] Retrieval functions defined (dense top-20, cross-encoder rerank)
+
+[exec 9] Queries + relevance rubric
+  CHECK target papers found: additive=doc 0, diffuser=doc 3,
+        synaptic=doc 7, rv_planet=doc 9 -> PASS
+  Relevant chunks S1/S2: Q1 28/31, Q2 23/24, Q3 15/18, Q4 31/34,
+        Q5 7/7, Q6 5/5, Q7 3/5, Q8 2/2, C1-T2 9/7, C2-T2 12/11
+  WARN  rubric check: Q8 has < 3 relevant chunks (P@5 capped at 0.40 for
+        every method). Kept unchanged; documented as a limitation.
+
+[exec 10] Sample queries Q1 (topic) and Q5 (detail), S2, without vs with reranking
+  Q1: all top-3 relevant in both; reranking promoted the theorem/main-result chunks.
+
+[exec 11] Multi-turn memory demo (C1, S2, reranked)
+  Memory OFF: C1-T2 retrieved docs 90, 82, 40 (all off-topic, relevant=0)
+  Memory ON : C1-T2 retrieved doc 3 (target paper)
+
+[exec 12] Evaluation: 32 single-turn rows, 16 multi-turn rows
+[exec 13] Manual review pool: 103 pooled chunks, 76 auto-labelled relevant
+[exec 14] Comparison tables (a) reranking, (b) chunking, (a+b) by level, (c) memory
+  Identical to Run 2.
+[exec 15] Chart saved: rag_comparison.png
+[exec 16] Findings saved: FINDINGS.md, METRICS.md,
+          results_single_turn.csv, results_multi_turn.csv
+  Best single-turn configuration: S2 sentence-aware with reranking
+
+---- Section 11: Improvements ----
+[exec 17] pip install rank_bm25
+[exec 18] BM25 indexes + hybrid (RRF, k=60, depth 50) search
+  CHECK dense_search_v2 == baseline dense_search -> S1 OK, S2 OK
+  CHECK BM25 top-5 for "rkhs gaussian rbf kernel additive" -> docs [0,0,0,0,0] (target) -> PASS
+[exec 19] Load BAAI/bge-reranker-base; define 5 pipelines
+  CHECK baseline pipeline reproduces Section 9 MRR -> True
+[exec 20] Pipeline evaluation, Q1–Q8 x S1/S2 x 5 pipelines
+  Best detail-query P@5: S2 + Hybrid + BGE = 0.65 (baseline 0.60)
+[exec 21] Q5 side-by-side: baseline 3/5 relevant in top-5; Hybrid + BGE 5/5
+[exec 22] Anchored memory
+  CHECK follow-up detection: C1-T2 True (scope [3]), C2-T2 True (scope [9]),
+        C3-T2 False (no rewrite, no scope) -> PASS
+[exec 23] Demo C1 with anchored memory (S2, Hybrid + BGE): C1-T2 scoped to doc 3
+[exec 24] Memory evaluation: none / concat / anchored x 2 pipelines x S1/S2 x C1–C3
+  Dependent turns: anchored >= concat in all 4 configs
+  Topic switch: concat P@5 = 0.0 in all 4 configs; anchored == none in all 4
+[exec 25] Chart saved: rag_improvements.png
+  Saved: IMPROVEMENTS.md, improved_single_turn.csv, improved_multi_turn.csv
+
+======================================================================
+SUMMARY
+======================================================================
+Errors: 0 | Checks: all PASS | Warnings: pip resolver notices, HF token
+notice, 5.7–7.8% chunks over the 256-token limit, Q8 rubric (2 relevant chunks)
+Reproducibility: Sections 1–10 gave identical metrics in Runs 2 and 3.
