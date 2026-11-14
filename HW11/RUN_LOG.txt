@@ -1,0 +1,14 @@
+date: 2026-11-14 05:32:25
+python: 3.13.16
+torch: 2.14.1+cu130
+transformers: 5.22.1
+device: cuda (NVIDIA A100-SXM4-40GB)
+model: openai/clip-vit-base-patch32
+seed: 6638
+part1_encode_sec: 4.6
+part2_encode_sec: 7.7
+total_sec: 340.9
+part1_precision_at_100: 0.7600
+part1_roc_auc: 0.9626
+part2_top1_single: 0.8831
+part2_top1_ensemble: 0.8931
