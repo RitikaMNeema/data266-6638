@@ -1,0 +1,343 @@
+DATA 266 · HW11 (repo folder HW12) · RUN_LOG
+Student: Ritika Mukesh Neema · SID4 6638 · SEED 6638
+Lines are copied verbatim from the executed notebooks' log() output (times are the Colab VM clock, UTC).
+
+==========================================================================================
+PART 1 — GPTQ  (HW11_Part1_GPTQ-2.ipynb · NVIDIA L4)
+==========================================================================================
+[21:18:02] SID4=6638 SEED=6638 SLICE=638 HP_ID=2 CLS_A=8 CLS_B=5
+[21:18:02] python=3.13.16 torch=2.15.0+cu132 transformers=5.24.1 gptqmodel=7.12.2 optimum=2.3.0 datasets=5.2.0
+[21:18:02] device=cuda (NVIDIA L4)
+[21:18:09] MODEL_ID=facebook/opt-125m  REVISION=27dcfa74d334bc871f3234de431e71c6eeba5dd6
+[21:18:13] wikitext-2-raw-v1: test=4358 rows, train=36718 rows, validation=3760 rows
+[21:18:27] test tokens=287,645  train tokens=2,428,602
+[21:18:36] base params = 125.2M
+[21:18:37] [base_fp16] loaded; weights on GPU = 245.5 MiB; q_proj layer type = Linear
+[21:18:40] [base_fp16] Wikitext-2 test: loss=3.3198  ppl=27.656  (140 x 2048 tokens, 3.2s)
+[21:18:41] [base_fp16] prefill 512 tok: p50=10.14 ms  p95=11.05 ms
+[21:19:15] [base_fp16] generate 128->+64 tok: p50=617.9 ms  p95=641.4 ms
+[21:19:15] [base_fp16] peak GPU memory = 1570.8 MiB; on-disk = 242.3 MiB
+[21:19:15] calibration: 128 samples x 512 tokens from wikitext-2 train
+[21:21:02] GPTQ quantization finished in 106.6s
+[21:23:53] [gptq_int4] loaded; weights on GPU = 118.7 MiB; q_proj layer type = MarlinLinear
+[21:23:57] [gptq_int4] Wikitext-2 test: loss=3.4293  ppl=30.855  (140 x 2048 tokens, 4.0s)
+[21:23:59] [gptq_int4] prefill 512 tok: p50=20.23 ms  p95=20.85 ms
+[21:25:07] [gptq_int4] generate 128->+64 tok: p50=1240.8 ms  p95=1281.4 ms
+[21:25:07] [gptq_int4] peak GPU memory = 1444.0 MiB; on-disk = 123.0 MiB
+[21:25:08] perplexity_change_pct = 11.568
+[21:25:08] prefill_p50_ratio_gptq_over_base = 1.994
+[21:25:08] generate_p50_ratio_gptq_over_base = 2.008
+[21:25:08] generate_p95_ratio_gptq_over_base = 1.998
+[21:25:08] peak_mem_ratio_gptq_over_base = 0.919
+[21:25:08] weights_mem_ratio_gptq_over_base = 0.484
+[21:25:08] disk_ratio_gptq_over_base = 0.508
+
+==========================================================================================
+PART 2 — Knowledge distillation  (HW11_Part2_Distillation-2.ipynb · Tesla T4)
+==========================================================================================
+[23:43:49] SID4=6638 SEED=6638 SLICE=638 HP_ID=2 CLS_A=8 CLS_B=5
+[23:43:49] python=3.13.16 torch=2.14.1+cu130 transformers=5.22.1 datasets=5.2.0
+[23:43:49] device=cuda (Tesla T4) amp=True
+[23:44:01] AG News: train=120,000  test=7,600  train class counts=[30000, 30000, 30000, 30000]  test class counts=[1900, 1900, 1900, 1900]
+[23:44:01] student training split: train=114,000  val=6,000
+[23:44:01] teacher archive: teacher_model.7z (383.1 MiB)
+[23:44:37] teacher folder: teacher_model/teacher_model -> ['__MACOSX', 'config.json', 'model.safetensors', 'special_tokens_map.json', 'tokenizer.json', 'tokenizer_config.json', 'vocab.txt']
+[23:45:05] teacher: bert / BertForSequenceClassification, num_labels=4, params=109.5M, id2label={0: 'WORLD', 1: 'SPORTS', 2: 'BUSINESS', 3: 'SCI/TECH'}
+[23:45:53] tokenised train/test for teacher and student in 48.2s (student mean length 52.8 tokens, truncated at 128)
+[23:45:56] teacher sanity check on 2,000 train samples: accuracy=0.9870; confusion (rows=true, cols=teacher col):
+[23:47:08] teacher logits for 120,000 train samples in 72.0s -> artifacts/teacher_train_logits.pt
+[23:47:08] teacher accuracy on the full training set: 0.9895
+[23:47:23] [teacher_bert] test acc=0.9443  test-set time=6.07s (1251/s)  latency p50=29.75ms p95=56.91ms  peak GPU=796MiB  params=109.5M  disk=417.7MiB
+[23:47:23] teacher per-class test accuracy: {'World': 0.9489473684210527, 'Sports': 0.988421052631579, 'Business': 0.9136842105263158, 'Sci/Tech': 0.9263157894736842}
+[23:47:32] == T1_a0.5: T=1 alpha=0.5 | 2 epochs x 3563 steps, bs=32, lr=5e-05
+[23:47:54]   [T1_a0.5] ep 1 step   200/7126  loss=0.7712  ce=0.7827  kl=0.7597  lr=2.34e-05  22s
+[23:48:12]   [T1_a0.5] ep 1 step   400/7126  loss=0.3104  ce=0.3242  kl=0.2966  lr=4.68e-05  40s
+[23:48:30]   [T1_a0.5] ep 1 step   600/7126  loss=0.2797  ce=0.2929  kl=0.2664  lr=4.87e-05  58s
+[23:48:51]   [T1_a0.5] ep 1 step   800/7126  loss=0.2372  ce=0.2536  kl=0.2208  lr=4.72e-05  80s
+[23:49:10]   [T1_a0.5] ep 1 step  1000/7126  loss=0.2313  ce=0.2476  kl=0.2151  lr=4.57e-05  98s
+[23:49:28]   [T1_a0.5] ep 1 step  1200/7126  loss=0.2090  ce=0.2254  kl=0.1925  lr=4.42e-05  116s
+[23:49:46]   [T1_a0.5] ep 1 step  1400/7126  loss=0.2116  ce=0.2267  kl=0.1966  lr=4.27e-05  135s
+[23:50:05]   [T1_a0.5] ep 1 step  1600/7126  loss=0.1950  ce=0.2085  kl=0.1814  lr=4.12e-05  153s
+[23:50:23]   [T1_a0.5] ep 1 step  1800/7126  loss=0.1994  ce=0.2147  kl=0.1841  lr=3.98e-05  172s
+[23:50:42]   [T1_a0.5] ep 1 step  2000/7126  loss=0.2041  ce=0.2176  kl=0.1905  lr=3.83e-05  190s
+[23:51:00]   [T1_a0.5] ep 1 step  2200/7126  loss=0.1808  ce=0.1995  kl=0.1620  lr=3.68e-05  208s
+[23:51:19]   [T1_a0.5] ep 1 step  2400/7126  loss=0.1872  ce=0.2034  kl=0.1710  lr=3.53e-05  227s
+[23:51:38]   [T1_a0.5] ep 1 step  2600/7126  loss=0.1784  ce=0.1923  kl=0.1645  lr=3.38e-05  246s
+[23:51:56]   [T1_a0.5] ep 1 step  2800/7126  loss=0.1670  ce=0.1813  kl=0.1527  lr=3.23e-05  264s
+[23:52:15]   [T1_a0.5] ep 1 step  3000/7126  loss=0.1744  ce=0.1914  kl=0.1574  lr=3.08e-05  283s
+[23:52:34]   [T1_a0.5] ep 1 step  3200/7126  loss=0.1526  ce=0.1686  kl=0.1366  lr=2.93e-05  302s
+[23:52:52]   [T1_a0.5] ep 1 step  3400/7126  loss=0.1631  ce=0.1779  kl=0.1482  lr=2.78e-05  320s
+[23:53:09]   [T1_a0.5] end of epoch 1: val acc=0.9418
+[23:53:13]   [T1_a0.5] ep 2 step  3600/7126  loss=0.1495  ce=0.1680  kl=0.1309  lr=2.63e-05  341s
+[23:53:32]   [T1_a0.5] ep 2 step  3800/7126  loss=0.1117  ce=0.1292  kl=0.0941  lr=2.48e-05  360s
+[23:53:50]   [T1_a0.5] ep 2 step  4000/7126  loss=0.1099  ce=0.1223  kl=0.0976  lr=2.33e-05  378s
+[23:54:09]   [T1_a0.5] ep 2 step  4200/7126  loss=0.1164  ce=0.1305  kl=0.1023  lr=2.18e-05  397s
+[23:54:27]   [T1_a0.5] ep 2 step  4400/7126  loss=0.1011  ce=0.1124  kl=0.0897  lr=2.03e-05  415s
+[23:54:45]   [T1_a0.5] ep 2 step  4600/7126  loss=0.1106  ce=0.1230  kl=0.0981  lr=1.89e-05  434s
+[23:55:04]   [T1_a0.5] ep 2 step  4800/7126  loss=0.1119  ce=0.1291  kl=0.0947  lr=1.74e-05  452s
+[23:55:23]   [T1_a0.5] ep 2 step  5000/7126  loss=0.1024  ce=0.1189  kl=0.0859  lr=1.59e-05  471s
+[23:55:41]   [T1_a0.5] ep 2 step  5200/7126  loss=0.1038  ce=0.1206  kl=0.0871  lr=1.44e-05  490s
+[23:56:00]   [T1_a0.5] ep 2 step  5400/7126  loss=0.1037  ce=0.1174  kl=0.0901  lr=1.29e-05  508s
+[23:56:18]   [T1_a0.5] ep 2 step  5600/7126  loss=0.1038  ce=0.1188  kl=0.0889  lr=1.14e-05  527s
+[23:56:37]   [T1_a0.5] ep 2 step  5800/7126  loss=0.1045  ce=0.1189  kl=0.0900  lr=9.90e-06  545s
+[23:56:56]   [T1_a0.5] ep 2 step  6000/7126  loss=0.0893  ce=0.1051  kl=0.0735  lr=8.40e-06  564s
+[23:57:14]   [T1_a0.5] ep 2 step  6200/7126  loss=0.0997  ce=0.1137  kl=0.0857  lr=6.91e-06  582s
+[23:57:33]   [T1_a0.5] ep 2 step  6400/7126  loss=0.1024  ce=0.1214  kl=0.0834  lr=5.42e-06  601s
+[23:57:52]   [T1_a0.5] ep 2 step  6600/7126  loss=0.0990  ce=0.1169  kl=0.0812  lr=3.93e-06  620s
+[23:58:10]   [T1_a0.5] ep 2 step  6800/7126  loss=0.0961  ce=0.1149  kl=0.0774  lr=2.43e-06  638s
+[23:58:29]   [T1_a0.5] ep 2 step  7000/7126  loss=0.1026  ce=0.1211  kl=0.0841  lr=9.40e-07  657s
+[23:58:41]   [T1_a0.5] ep 2 step  7126/7126  loss=0.0905  ce=0.1054  kl=0.0756  lr=0.00e+00  669s
+[23:58:43]   [T1_a0.5] end of epoch 2: val acc=0.9450
+[23:58:46] == T1_a0.5 done in 11.2 min: val acc=0.9450  test acc=0.9488
+[23:58:48] == T2_a0.5: T=2 alpha=0.5 | 2 epochs x 3563 steps, bs=32, lr=5e-05
+[23:59:06]   [T2_a0.5] ep 1 step   200/7126  loss=1.8457  ce=0.7794  kl=2.9120  lr=2.34e-05  19s
+[23:59:25]   [T2_a0.5] ep 1 step   400/7126  loss=0.6689  ce=0.3695  kl=0.9683  lr=4.68e-05  37s
+[23:59:44]   [T2_a0.5] ep 1 step   600/7126  loss=0.5899  ce=0.3602  kl=0.8197  lr=4.87e-05  56s
+[00:00:02]   [T2_a0.5] ep 1 step   800/7126  loss=0.4711  ce=0.3072  kl=0.6351  lr=4.72e-05  74s
+[00:00:21]   [T2_a0.5] ep 1 step  1000/7126  loss=0.4463  ce=0.2885  kl=0.6041  lr=4.57e-05  93s
+[00:00:39]   [T2_a0.5] ep 1 step  1200/7126  loss=0.3923  ce=0.2604  kl=0.5242  lr=4.42e-05  112s
+[00:00:58]   [T2_a0.5] ep 1 step  1400/7126  loss=0.4136  ce=0.2682  kl=0.5590  lr=4.27e-05  130s
+[00:01:16]   [T2_a0.5] ep 1 step  1600/7126  loss=0.3715  ce=0.2426  kl=0.5004  lr=4.12e-05  149s
+[00:01:35]   [T2_a0.5] ep 1 step  1800/7126  loss=0.3713  ce=0.2445  kl=0.4981  lr=3.98e-05  167s
+[00:01:53]   [T2_a0.5] ep 1 step  2000/7126  loss=0.3742  ce=0.2474  kl=0.5011  lr=3.83e-05  186s
+[00:02:12]   [T2_a0.5] ep 1 step  2200/7126  loss=0.3398  ce=0.2404  kl=0.4392  lr=3.68e-05  204s
+[00:02:31]   [T2_a0.5] ep 1 step  2400/7126  loss=0.3502  ce=0.2370  kl=0.4634  lr=3.53e-05  223s
+[00:02:50]   [T2_a0.5] ep 1 step  2600/7126  loss=0.3296  ce=0.2218  kl=0.4374  lr=3.38e-05  242s
+[00:03:08]   [T2_a0.5] ep 1 step  2800/7126  loss=0.3015  ce=0.2018  kl=0.4011  lr=3.23e-05  261s
+[00:03:27]   [T2_a0.5] ep 1 step  3000/7126  loss=0.3206  ce=0.2234  kl=0.4178  lr=3.08e-05  279s
+[00:03:46]   [T2_a0.5] ep 1 step  3200/7126  loss=0.2816  ce=0.1958  kl=0.3675  lr=2.93e-05  298s
+[00:04:04]   [T2_a0.5] ep 1 step  3400/7126  loss=0.3006  ce=0.2095  kl=0.3918  lr=2.78e-05  317s
+[00:04:22]   [T2_a0.5] end of epoch 1: val acc=0.9402
+[00:04:25]   [T2_a0.5] ep 2 step  3600/7126  loss=0.2786  ce=0.1967  kl=0.3606  lr=2.63e-05  337s
+[00:04:44]   [T2_a0.5] ep 2 step  3800/7126  loss=0.2097  ce=0.1597  kl=0.2596  lr=2.48e-05  356s
+[00:05:03]   [T2_a0.5] ep 2 step  4000/7126  loss=0.1943  ce=0.1416  kl=0.2469  lr=2.33e-05  375s
+[00:05:21]   [T2_a0.5] ep 2 step  4200/7126  loss=0.2071  ce=0.1508  kl=0.2635  lr=2.18e-05  393s
+[00:05:40]   [T2_a0.5] ep 2 step  4400/7126  loss=0.1852  ce=0.1342  kl=0.2362  lr=2.03e-05  412s
+[00:05:58]   [T2_a0.5] ep 2 step  4600/7126  loss=0.1984  ce=0.1443  kl=0.2525  lr=1.89e-05  430s
+[00:06:17]   [T2_a0.5] ep 2 step  4800/7126  loss=0.1948  ce=0.1496  kl=0.2400  lr=1.74e-05  449s
+[00:06:35]   [T2_a0.5] ep 2 step  5000/7126  loss=0.1885  ce=0.1439  kl=0.2332  lr=1.59e-05  468s
+[00:06:54]   [T2_a0.5] ep 2 step  5200/7126  loss=0.1863  ce=0.1443  kl=0.2283  lr=1.44e-05  486s
+[00:07:13]   [T2_a0.5] ep 2 step  5400/7126  loss=0.1846  ce=0.1375  kl=0.2316  lr=1.29e-05  505s
+[00:07:31]   [T2_a0.5] ep 2 step  5600/7126  loss=0.1859  ce=0.1415  kl=0.2302  lr=1.14e-05  523s
+[00:07:50]   [T2_a0.5] ep 2 step  5800/7126  loss=0.1834  ce=0.1403  kl=0.2264  lr=9.90e-06  542s
+[00:08:09]   [T2_a0.5] ep 2 step  6000/7126  loss=0.1632  ce=0.1245  kl=0.2018  lr=8.40e-06  561s
+[00:08:27]   [T2_a0.5] ep 2 step  6200/7126  loss=0.1769  ce=0.1360  kl=0.2178  lr=6.91e-06  580s
+[00:08:46]   [T2_a0.5] ep 2 step  6400/7126  loss=0.1745  ce=0.1404  kl=0.2085  lr=5.42e-06  598s
+[00:09:05]   [T2_a0.5] ep 2 step  6600/7126  loss=0.1812  ce=0.1425  kl=0.2199  lr=3.93e-06  617s
+[00:09:23]   [T2_a0.5] ep 2 step  6800/7126  loss=0.1610  ce=0.1297  kl=0.1922  lr=2.43e-06  636s
+[00:09:42]   [T2_a0.5] ep 2 step  7000/7126  loss=0.1789  ce=0.1455  kl=0.2122  lr=9.40e-07  654s
+[00:09:54]   [T2_a0.5] ep 2 step  7126/7126  loss=0.1625  ce=0.1252  kl=0.1997  lr=0.00e+00  666s
+[00:09:56]   [T2_a0.5] end of epoch 2: val acc=0.9447
+[00:09:59] == T2_a0.5 done in 11.1 min: val acc=0.9447  test acc=0.9480
+[00:10:01] == T4_a0.5: T=4 alpha=0.5 | 2 epochs x 3563 steps, bs=32, lr=5e-05
+[00:10:19]   [T4_a0.5] ep 1 step   200/7126  loss=3.3122  ce=0.7802  kl=5.8443  lr=2.34e-05  19s
+[00:10:38]   [T4_a0.5] ep 1 step   400/7126  loss=1.0200  ce=0.4326  kl=1.6073  lr=4.68e-05  37s
+[00:10:57]   [T4_a0.5] ep 1 step   600/7126  loss=0.8658  ce=0.4255  kl=1.3060  lr=4.87e-05  56s
+[00:11:15]   [T4_a0.5] ep 1 step   800/7126  loss=0.7041  ce=0.3630  kl=1.0452  lr=4.72e-05  75s
+[00:11:34]   [T4_a0.5] ep 1 step  1000/7126  loss=0.6525  ce=0.3374  kl=0.9677  lr=4.57e-05  93s
+[00:11:53]   [T4_a0.5] ep 1 step  1200/7126  loss=0.5799  ce=0.2997  kl=0.8601  lr=4.42e-05  112s
+[00:12:11]   [T4_a0.5] ep 1 step  1400/7126  loss=0.5813  ce=0.2959  kl=0.8666  lr=4.27e-05  131s
+[00:12:30]   [T4_a0.5] ep 1 step  1600/7126  loss=0.5312  ce=0.2745  kl=0.7879  lr=4.12e-05  149s
+[00:12:49]   [T4_a0.5] ep 1 step  1800/7126  loss=0.5509  ce=0.2874  kl=0.8143  lr=3.98e-05  168s
+[00:13:07]   [T4_a0.5] ep 1 step  2000/7126  loss=0.5125  ce=0.2765  kl=0.7486  lr=3.83e-05  187s
+[00:13:26]   [T4_a0.5] ep 1 step  2200/7126  loss=0.4701  ce=0.2611  kl=0.6791  lr=3.68e-05  205s
+[00:13:45]   [T4_a0.5] ep 1 step  2400/7126  loss=0.4940  ce=0.2628  kl=0.7252  lr=3.53e-05  224s
+[00:14:04]   [T4_a0.5] ep 1 step  2600/7126  loss=0.4584  ce=0.2469  kl=0.6698  lr=3.38e-05  243s
+[00:14:23]   [T4_a0.5] ep 1 step  2800/7126  loss=0.4389  ce=0.2322  kl=0.6455  lr=3.23e-05  262s
+[00:14:41]   [T4_a0.5] ep 1 step  3000/7126  loss=0.4571  ce=0.2516  kl=0.6626  lr=3.08e-05  281s
+[00:15:00]   [T4_a0.5] ep 1 step  3200/7126  loss=0.3830  ce=0.2144  kl=0.5516  lr=2.93e-05  300s
+[00:15:19]   [T4_a0.5] ep 1 step  3400/7126  loss=0.4357  ce=0.2432  kl=0.6282  lr=2.78e-05  318s
+[00:15:37]   [T4_a0.5] end of epoch 1: val acc=0.9405
+[00:15:40]   [T4_a0.5] ep 2 step  3600/7126  loss=0.3909  ce=0.2220  kl=0.5598  lr=2.63e-05  340s
+[00:15:59]   [T4_a0.5] ep 2 step  3800/7126  loss=0.2757  ce=0.1675  kl=0.3839  lr=2.48e-05  359s
+[00:16:18]   [T4_a0.5] ep 2 step  4000/7126  loss=0.2721  ce=0.1590  kl=0.3852  lr=2.33e-05  377s
+[00:16:37]   [T4_a0.5] ep 2 step  4200/7126  loss=0.2899  ce=0.1701  kl=0.4097  lr=2.18e-05  396s
+[00:16:55]   [T4_a0.5] ep 2 step  4400/7126  loss=0.2586  ce=0.1503  kl=0.3669  lr=2.03e-05  415s
+[00:17:14]   [T4_a0.5] ep 2 step  4600/7126  loss=0.2686  ce=0.1558  kl=0.3814  lr=1.89e-05  433s
+[00:17:32]   [T4_a0.5] ep 2 step  4800/7126  loss=0.2722  ce=0.1692  kl=0.3751  lr=1.74e-05  452s
+[00:17:51]   [T4_a0.5] ep 2 step  5000/7126  loss=0.2592  ce=0.1637  kl=0.3546  lr=1.59e-05  471s
+[00:18:10]   [T4_a0.5] ep 2 step  5200/7126  loss=0.2586  ce=0.1615  kl=0.3557  lr=1.44e-05  490s
+[00:18:29]   [T4_a0.5] ep 2 step  5400/7126  loss=0.2498  ce=0.1568  kl=0.3428  lr=1.29e-05  508s
+[00:18:47]   [T4_a0.5] ep 2 step  5600/7126  loss=0.2562  ce=0.1606  kl=0.3519  lr=1.14e-05  527s
+[00:19:06]   [T4_a0.5] ep 2 step  5800/7126  loss=0.2486  ce=0.1555  kl=0.3417  lr=9.90e-06  546s
+[00:19:25]   [T4_a0.5] ep 2 step  6000/7126  loss=0.2257  ce=0.1401  kl=0.3114  lr=8.40e-06  564s
+[00:19:44]   [T4_a0.5] ep 2 step  6200/7126  loss=0.2500  ce=0.1554  kl=0.3447  lr=6.91e-06  583s
+[00:20:02]   [T4_a0.5] ep 2 step  6400/7126  loss=0.2370  ce=0.1562  kl=0.3177  lr=5.42e-06  602s
+[00:20:21]   [T4_a0.5] ep 2 step  6600/7126  loss=0.2422  ce=0.1569  kl=0.3275  lr=3.93e-06  621s
+[00:20:40]   [T4_a0.5] ep 2 step  6800/7126  loss=0.2253  ce=0.1460  kl=0.3045  lr=2.43e-06  639s
+[00:20:59]   [T4_a0.5] ep 2 step  7000/7126  loss=0.2408  ce=0.1596  kl=0.3220  lr=9.40e-07  658s
+[00:21:10]   [T4_a0.5] ep 2 step  7126/7126  loss=0.2280  ce=0.1450  kl=0.3110  lr=0.00e+00  670s
+[00:21:13]   [T4_a0.5] end of epoch 2: val acc=0.9457
+[00:21:16] == T4_a0.5 done in 11.2 min: val acc=0.9457  test acc=0.9483
+[00:21:18] == T8_a0.5: T=8 alpha=0.5 | 2 epochs x 3563 steps, bs=32, lr=5e-05
+[00:21:36]   [T8_a0.5] ep 1 step   200/7126  loss=3.6409  ce=0.7807  kl=6.5011  lr=2.34e-05  19s
+[00:21:55]   [T8_a0.5] ep 1 step   400/7126  loss=1.0694  ce=0.4479  kl=1.6909  lr=4.68e-05  37s
+[00:22:14]   [T8_a0.5] ep 1 step   600/7126  loss=0.8547  ce=0.4179  kl=1.2915  lr=4.87e-05  56s
+[00:22:32]   [T8_a0.5] ep 1 step   800/7126  loss=0.7093  ce=0.3619  kl=1.0567  lr=4.72e-05  74s
+[00:22:51]   [T8_a0.5] ep 1 step  1000/7126  loss=0.6500  ce=0.3331  kl=0.9669  lr=4.57e-05  93s
+[00:23:09]   [T8_a0.5] ep 1 step  1200/7126  loss=0.5893  ce=0.3012  kl=0.8774  lr=4.42e-05  112s
+[00:23:28]   [T8_a0.5] ep 1 step  1400/7126  loss=0.5951  ce=0.2979  kl=0.8923  lr=4.27e-05  130s
+[00:23:46]   [T8_a0.5] ep 1 step  1600/7126  loss=0.5456  ce=0.2761  kl=0.8152  lr=4.12e-05  149s
+[00:24:05]   [T8_a0.5] ep 1 step  1800/7126  loss=0.5627  ce=0.2890  kl=0.8365  lr=3.98e-05  168s
+[00:24:24]   [T8_a0.5] ep 1 step  2000/7126  loss=0.5400  ce=0.2894  kl=0.7905  lr=3.83e-05  186s
+[00:24:42]   [T8_a0.5] ep 1 step  2200/7126  loss=0.4803  ce=0.2649  kl=0.6957  lr=3.68e-05  205s
+[00:25:01]   [T8_a0.5] ep 1 step  2400/7126  loss=0.4957  ce=0.2670  kl=0.7244  lr=3.53e-05  224s
+[00:25:20]   [T8_a0.5] ep 1 step  2600/7126  loss=0.4681  ce=0.2499  kl=0.6863  lr=3.38e-05  242s
+[00:25:38]   [T8_a0.5] ep 1 step  2800/7126  loss=0.4442  ce=0.2360  kl=0.6524  lr=3.23e-05  261s
+[00:25:57]   [T8_a0.5] ep 1 step  3000/7126  loss=0.4595  ce=0.2528  kl=0.6662  lr=3.08e-05  280s
+[00:26:16]   [T8_a0.5] ep 1 step  3200/7126  loss=0.3950  ce=0.2201  kl=0.5698  lr=2.93e-05  298s
+[00:26:34]   [T8_a0.5] ep 1 step  3400/7126  loss=0.4471  ce=0.2478  kl=0.6463  lr=2.78e-05  317s
+[00:26:52]   [T8_a0.5] end of epoch 1: val acc=0.9422
+[00:26:55]   [T8_a0.5] ep 2 step  3600/7126  loss=0.3956  ce=0.2218  kl=0.5693  lr=2.63e-05  338s
+[00:27:14]   [T8_a0.5] ep 2 step  3800/7126  loss=0.2847  ce=0.1699  kl=0.3996  lr=2.48e-05  357s
+[00:27:33]   [T8_a0.5] ep 2 step  4000/7126  loss=0.2842  ce=0.1680  kl=0.4004  lr=2.33e-05  375s
+[00:27:51]   [T8_a0.5] ep 2 step  4200/7126  loss=0.3019  ce=0.1784  kl=0.4255  lr=2.18e-05  394s
+[00:28:10]   [T8_a0.5] ep 2 step  4400/7126  loss=0.2682  ce=0.1525  kl=0.3838  lr=2.03e-05  412s
+[00:28:28]   [T8_a0.5] ep 2 step  4600/7126  loss=0.2877  ce=0.1667  kl=0.4087  lr=1.89e-05  431s
+[00:28:47]   [T8_a0.5] ep 2 step  4800/7126  loss=0.2759  ce=0.1681  kl=0.3837  lr=1.74e-05  449s
+[00:29:06]   [T8_a0.5] ep 2 step  5000/7126  loss=0.2750  ce=0.1731  kl=0.3769  lr=1.59e-05  468s
+[00:29:24]   [T8_a0.5] ep 2 step  5200/7126  loss=0.2571  ce=0.1597  kl=0.3544  lr=1.44e-05  487s
+[00:29:43]   [T8_a0.5] ep 2 step  5400/7126  loss=0.2483  ce=0.1543  kl=0.3423  lr=1.29e-05  505s
+[00:30:02]   [T8_a0.5] ep 2 step  5600/7126  loss=0.2627  ce=0.1602  kl=0.3653  lr=1.14e-05  524s
+[00:30:20]   [T8_a0.5] ep 2 step  5800/7126  loss=0.2640  ce=0.1648  kl=0.3632  lr=9.90e-06  543s
+[00:30:39]   [T8_a0.5] ep 2 step  6000/7126  loss=0.2409  ce=0.1489  kl=0.3328  lr=8.40e-06  561s
+[00:30:57]   [T8_a0.5] ep 2 step  6200/7126  loss=0.2638  ce=0.1640  kl=0.3635  lr=6.91e-06  580s
+[00:31:16]   [T8_a0.5] ep 2 step  6400/7126  loss=0.2515  ce=0.1670  kl=0.3359  lr=5.42e-06  599s
+[00:31:35]   [T8_a0.5] ep 2 step  6600/7126  loss=0.2416  ce=0.1553  kl=0.3280  lr=3.93e-06  618s
+[00:31:54]   [T8_a0.5] ep 2 step  6800/7126  loss=0.2292  ce=0.1462  kl=0.3123  lr=2.43e-06  636s
+[00:32:12]   [T8_a0.5] ep 2 step  7000/7126  loss=0.2490  ce=0.1622  kl=0.3359  lr=9.40e-07  655s
+[00:32:24]   [T8_a0.5] ep 2 step  7126/7126  loss=0.2421  ce=0.1488  kl=0.3355  lr=0.00e+00  667s
+[00:32:27]   [T8_a0.5] end of epoch 2: val acc=0.9448
+[00:32:30] == T8_a0.5 done in 11.2 min: val acc=0.9448  test acc=0.9464
+[00:32:31] BEST_T = 4
+[00:32:31] == alpha0.25_T4: T=4 alpha=0.25 | 2 epochs x 3563 steps, bs=32, lr=5e-05
+[00:32:50]   [alpha0.25_T4] ep 1 step   200/7126  loss=4.5508  ce=0.7832  kl=5.8067  lr=2.34e-05  19s
+[00:33:08]   [alpha0.25_T4] ep 1 step   400/7126  loss=1.3020  ce=0.4624  kl=1.5819  lr=4.68e-05  37s
+[00:33:27]   [alpha0.25_T4] ep 1 step   600/7126  loss=1.0669  ce=0.4376  kl=1.2766  lr=4.87e-05  56s
+[00:33:46]   [alpha0.25_T4] ep 1 step   800/7126  loss=0.8546  ce=0.3692  kl=1.0165  lr=4.72e-05  74s
+[00:34:04]   [alpha0.25_T4] ep 1 step  1000/7126  loss=0.7995  ce=0.3450  kl=0.9510  lr=4.57e-05  93s
+[00:34:23]   [alpha0.25_T4] ep 1 step  1200/7126  loss=0.7009  ce=0.3034  kl=0.8333  lr=4.42e-05  112s
+[00:34:41]   [alpha0.25_T4] ep 1 step  1400/7126  loss=0.7342  ce=0.3145  kl=0.8740  lr=4.27e-05  130s
+[00:35:00]   [alpha0.25_T4] ep 1 step  1600/7126  loss=0.6471  ce=0.2751  kl=0.7711  lr=4.12e-05  149s
+[00:35:19]   [alpha0.25_T4] ep 1 step  1800/7126  loss=0.6907  ce=0.3028  kl=0.8200  lr=3.98e-05  168s
+[00:35:37]   [alpha0.25_T4] ep 1 step  2000/7126  loss=0.6618  ce=0.2978  kl=0.7832  lr=3.83e-05  186s
+[00:35:56]   [alpha0.25_T4] ep 1 step  2200/7126  loss=0.5929  ce=0.2774  kl=0.6981  lr=3.68e-05  205s
+[00:36:15]   [alpha0.25_T4] ep 1 step  2400/7126  loss=0.6082  ce=0.2762  kl=0.7189  lr=3.53e-05  224s
+[00:36:33]   [alpha0.25_T4] ep 1 step  2600/7126  loss=0.5752  ce=0.2627  kl=0.6794  lr=3.38e-05  242s
+[00:36:52]   [alpha0.25_T4] ep 1 step  2800/7126  loss=0.5222  ce=0.2355  kl=0.6177  lr=3.23e-05  261s
+[00:37:11]   [alpha0.25_T4] ep 1 step  3000/7126  loss=0.5561  ce=0.2620  kl=0.6541  lr=3.08e-05  280s
+[00:37:29]   [alpha0.25_T4] ep 1 step  3200/7126  loss=0.4736  ce=0.2288  kl=0.5552  lr=2.93e-05  298s
+[00:37:48]   [alpha0.25_T4] ep 1 step  3400/7126  loss=0.5306  ce=0.2516  kl=0.6236  lr=2.78e-05  317s
+[00:38:06]   [alpha0.25_T4] end of epoch 1: val acc=0.9422
+[00:38:09]   [alpha0.25_T4] ep 2 step  3600/7126  loss=0.4585  ce=0.2226  kl=0.5371  lr=2.63e-05  338s
+[00:38:28]   [alpha0.25_T4] ep 2 step  3800/7126  loss=0.3400  ce=0.1835  kl=0.3922  lr=2.48e-05  357s
+[00:38:47]   [alpha0.25_T4] ep 2 step  4000/7126  loss=0.3410  ce=0.1748  kl=0.3964  lr=2.33e-05  376s
+[00:39:05]   [alpha0.25_T4] ep 2 step  4200/7126  loss=0.3484  ce=0.1807  kl=0.4043  lr=2.18e-05  394s
+[00:39:24]   [alpha0.25_T4] ep 2 step  4400/7126  loss=0.3140  ce=0.1559  kl=0.3667  lr=2.03e-05  413s
+[00:39:42]   [alpha0.25_T4] ep 2 step  4600/7126  loss=0.3331  ce=0.1684  kl=0.3880  lr=1.89e-05  431s
+[00:40:01]   [alpha0.25_T4] ep 2 step  4800/7126  loss=0.3119  ce=0.1724  kl=0.3584  lr=1.74e-05  450s
+[00:40:19]   [alpha0.25_T4] ep 2 step  5000/7126  loss=0.3299  ce=0.1821  kl=0.3792  lr=1.59e-05  468s
+[00:40:38]   [alpha0.25_T4] ep 2 step  5200/7126  loss=0.3092  ce=0.1695  kl=0.3558  lr=1.44e-05  487s
+[00:40:57]   [alpha0.25_T4] ep 2 step  5400/7126  loss=0.2879  ce=0.1571  kl=0.3316  lr=1.29e-05  506s
+[00:41:15]   [alpha0.25_T4] ep 2 step  5600/7126  loss=0.3063  ce=0.1688  kl=0.3521  lr=1.14e-05  524s
+[00:41:34]   [alpha0.25_T4] ep 2 step  5800/7126  loss=0.3022  ce=0.1649  kl=0.3480  lr=9.90e-06  543s
+[00:41:53]   [alpha0.25_T4] ep 2 step  6000/7126  loss=0.2764  ce=0.1515  kl=0.3180  lr=8.40e-06  562s
+[00:42:11]   [alpha0.25_T4] ep 2 step  6200/7126  loss=0.3016  ce=0.1671  kl=0.3464  lr=6.91e-06  580s
+[00:42:30]   [alpha0.25_T4] ep 2 step  6400/7126  loss=0.2888  ce=0.1693  kl=0.3286  lr=5.42e-06  599s
+[00:42:49]   [alpha0.25_T4] ep 2 step  6600/7126  loss=0.2876  ce=0.1653  kl=0.3284  lr=3.93e-06  618s
+[00:43:07]   [alpha0.25_T4] ep 2 step  6800/7126  loss=0.2651  ce=0.1550  kl=0.3018  lr=2.43e-06  636s
+[00:43:26]   [alpha0.25_T4] ep 2 step  7000/7126  loss=0.2853  ce=0.1746  kl=0.3222  lr=9.40e-07  655s
+[00:43:38]   [alpha0.25_T4] ep 2 step  7126/7126  loss=0.2820  ce=0.1566  kl=0.3238  lr=0.00e+00  667s
+[00:43:40]   [alpha0.25_T4] end of epoch 2: val acc=0.9477
+[00:43:43] == alpha0.25_T4 done in 11.2 min: val acc=0.9477  test acc=0.9468
+[00:43:45] == alpha0.5_T4: T=4 alpha=0.5 | 2 epochs x 3563 steps, bs=32, lr=5e-05
+[00:44:03]   [alpha0.5_T4] ep 1 step   200/7126  loss=3.3122  ce=0.7802  kl=5.8443  lr=2.34e-05  19s
+[00:44:22]   [alpha0.5_T4] ep 1 step   400/7126  loss=1.0200  ce=0.4326  kl=1.6073  lr=4.68e-05  37s
+[00:44:41]   [alpha0.5_T4] ep 1 step   600/7126  loss=0.8658  ce=0.4255  kl=1.3060  lr=4.87e-05  56s
+[00:44:59]   [alpha0.5_T4] ep 1 step   800/7126  loss=0.7041  ce=0.3630  kl=1.0452  lr=4.72e-05  74s
+[00:45:18]   [alpha0.5_T4] ep 1 step  1000/7126  loss=0.6525  ce=0.3374  kl=0.9677  lr=4.57e-05  93s
+[00:45:37]   [alpha0.5_T4] ep 1 step  1200/7126  loss=0.5799  ce=0.2997  kl=0.8601  lr=4.42e-05  112s
+[00:45:55]   [alpha0.5_T4] ep 1 step  1400/7126  loss=0.5813  ce=0.2959  kl=0.8666  lr=4.27e-05  130s
+[00:46:14]   [alpha0.5_T4] ep 1 step  1600/7126  loss=0.5312  ce=0.2745  kl=0.7879  lr=4.12e-05  149s
+[00:46:33]   [alpha0.5_T4] ep 1 step  1800/7126  loss=0.5509  ce=0.2874  kl=0.8143  lr=3.98e-05  168s
+[00:46:51]   [alpha0.5_T4] ep 1 step  2000/7126  loss=0.5125  ce=0.2765  kl=0.7486  lr=3.83e-05  186s
+[00:47:10]   [alpha0.5_T4] ep 1 step  2200/7126  loss=0.4701  ce=0.2611  kl=0.6791  lr=3.68e-05  205s
+[00:47:28]   [alpha0.5_T4] ep 1 step  2400/7126  loss=0.4940  ce=0.2628  kl=0.7252  lr=3.53e-05  224s
+[00:47:47]   [alpha0.5_T4] ep 1 step  2600/7126  loss=0.4584  ce=0.2469  kl=0.6698  lr=3.38e-05  242s
+[00:48:06]   [alpha0.5_T4] ep 1 step  2800/7126  loss=0.4389  ce=0.2322  kl=0.6455  lr=3.23e-05  261s
+[00:48:24]   [alpha0.5_T4] ep 1 step  3000/7126  loss=0.4571  ce=0.2516  kl=0.6626  lr=3.08e-05  280s
+[00:48:43]   [alpha0.5_T4] ep 1 step  3200/7126  loss=0.3830  ce=0.2144  kl=0.5516  lr=2.93e-05  299s
+[00:49:02]   [alpha0.5_T4] ep 1 step  3400/7126  loss=0.4357  ce=0.2432  kl=0.6282  lr=2.78e-05  317s
+[00:49:19]   [alpha0.5_T4] end of epoch 1: val acc=0.9405
+[00:49:23]   [alpha0.5_T4] ep 2 step  3600/7126  loss=0.3909  ce=0.2220  kl=0.5598  lr=2.63e-05  338s
+[00:49:42]   [alpha0.5_T4] ep 2 step  3800/7126  loss=0.2757  ce=0.1675  kl=0.3839  lr=2.48e-05  357s
+[00:50:00]   [alpha0.5_T4] ep 2 step  4000/7126  loss=0.2721  ce=0.1590  kl=0.3852  lr=2.33e-05  375s
+[00:50:19]   [alpha0.5_T4] ep 2 step  4200/7126  loss=0.2899  ce=0.1701  kl=0.4097  lr=2.18e-05  394s
+[00:50:37]   [alpha0.5_T4] ep 2 step  4400/7126  loss=0.2586  ce=0.1503  kl=0.3669  lr=2.03e-05  412s
+[00:50:56]   [alpha0.5_T4] ep 2 step  4600/7126  loss=0.2686  ce=0.1558  kl=0.3814  lr=1.89e-05  431s
+[00:51:14]   [alpha0.5_T4] ep 2 step  4800/7126  loss=0.2722  ce=0.1692  kl=0.3751  lr=1.74e-05  449s
+[00:51:33]   [alpha0.5_T4] ep 2 step  5000/7126  loss=0.2592  ce=0.1637  kl=0.3546  lr=1.59e-05  468s
+[00:51:51]   [alpha0.5_T4] ep 2 step  5200/7126  loss=0.2586  ce=0.1615  kl=0.3557  lr=1.44e-05  487s
+[00:52:10]   [alpha0.5_T4] ep 2 step  5400/7126  loss=0.2498  ce=0.1568  kl=0.3428  lr=1.29e-05  505s
+[00:52:29]   [alpha0.5_T4] ep 2 step  5600/7126  loss=0.2562  ce=0.1606  kl=0.3519  lr=1.14e-05  524s
+[00:52:47]   [alpha0.5_T4] ep 2 step  5800/7126  loss=0.2486  ce=0.1555  kl=0.3417  lr=9.90e-06  543s
+[00:53:06]   [alpha0.5_T4] ep 2 step  6000/7126  loss=0.2257  ce=0.1401  kl=0.3114  lr=8.40e-06  561s
+[00:53:25]   [alpha0.5_T4] ep 2 step  6200/7126  loss=0.2500  ce=0.1554  kl=0.3447  lr=6.91e-06  580s
+[00:53:43]   [alpha0.5_T4] ep 2 step  6400/7126  loss=0.2370  ce=0.1562  kl=0.3177  lr=5.42e-06  599s
+[00:54:02]   [alpha0.5_T4] ep 2 step  6600/7126  loss=0.2422  ce=0.1569  kl=0.3275  lr=3.93e-06  618s
+[00:54:21]   [alpha0.5_T4] ep 2 step  6800/7126  loss=0.2253  ce=0.1460  kl=0.3045  lr=2.43e-06  636s
+[00:54:39]   [alpha0.5_T4] ep 2 step  7000/7126  loss=0.2408  ce=0.1596  kl=0.3220  lr=9.40e-07  655s
+[00:54:51]   [alpha0.5_T4] ep 2 step  7126/7126  loss=0.2280  ce=0.1450  kl=0.3110  lr=0.00e+00  666s
+[00:54:54]   [alpha0.5_T4] end of epoch 2: val acc=0.9457
+[00:54:57] == alpha0.5_T4 done in 11.1 min: val acc=0.9457  test acc=0.9483
+[00:54:58] == alpha0.75_T4: T=4 alpha=0.75 | 2 epochs x 3563 steps, bs=32, lr=5e-05
+[00:55:17]   [alpha0.75_T4] ep 1 step   200/7126  loss=2.0677  ce=0.7790  kl=5.9336  lr=2.34e-05  19s
+[00:55:35]   [alpha0.75_T4] ep 1 step   400/7126  loss=0.7447  ce=0.3942  kl=1.7963  lr=4.68e-05  37s
+[00:55:54]   [alpha0.75_T4] ep 1 step   600/7126  loss=0.6138  ce=0.3827  kl=1.3072  lr=4.87e-05  56s
+[00:56:12]   [alpha0.75_T4] ep 1 step   800/7126  loss=0.5213  ce=0.3397  kl=1.0660  lr=4.72e-05  74s
+[00:56:31]   [alpha0.75_T4] ep 1 step  1000/7126  loss=0.4770  ce=0.3084  kl=0.9826  lr=4.57e-05  93s
+[00:56:50]   [alpha0.75_T4] ep 1 step  1200/7126  loss=0.4286  ce=0.2783  kl=0.8796  lr=4.42e-05  112s
+[00:57:08]   [alpha0.75_T4] ep 1 step  1400/7126  loss=0.4331  ce=0.2781  kl=0.8982  lr=4.27e-05  130s
+[00:57:27]   [alpha0.75_T4] ep 1 step  1600/7126  loss=0.3936  ce=0.2545  kl=0.8111  lr=4.12e-05  149s
+[00:57:46]   [alpha0.75_T4] ep 1 step  1800/7126  loss=0.3942  ce=0.2550  kl=0.8115  lr=3.98e-05  168s
+[00:58:04]   [alpha0.75_T4] ep 1 step  2000/7126  loss=0.3927  ce=0.2625  kl=0.7833  lr=3.83e-05  186s
+[00:58:23]   [alpha0.75_T4] ep 1 step  2200/7126  loss=0.3555  ce=0.2435  kl=0.6914  lr=3.68e-05  205s
+[00:58:42]   [alpha0.75_T4] ep 1 step  2400/7126  loss=0.3648  ce=0.2439  kl=0.7275  lr=3.53e-05  224s
+[00:59:00]   [alpha0.75_T4] ep 1 step  2600/7126  loss=0.3337  ce=0.2228  kl=0.6663  lr=3.38e-05  242s
+[00:59:19]   [alpha0.75_T4] ep 1 step  2800/7126  loss=0.3273  ce=0.2185  kl=0.6536  lr=3.23e-05  261s
+[00:59:38]   [alpha0.75_T4] ep 1 step  3000/7126  loss=0.3361  ce=0.2275  kl=0.6619  lr=3.08e-05  280s
+[00:59:57]   [alpha0.75_T4] ep 1 step  3200/7126  loss=0.2888  ce=0.1975  kl=0.5627  lr=2.93e-05  299s
+[01:00:15]   [alpha0.75_T4] ep 1 step  3400/7126  loss=0.3145  ce=0.2164  kl=0.6088  lr=2.78e-05  317s
+[01:00:33]   [alpha0.75_T4] end of epoch 1: val acc=0.9398
+[01:00:36]   [alpha0.75_T4] ep 2 step  3600/7126  loss=0.2898  ce=0.1996  kl=0.5605  lr=2.63e-05  338s
+[01:00:56]   [alpha0.75_T4] ep 2 step  3800/7126  loss=0.2222  ce=0.1607  kl=0.4066  lr=2.48e-05  358s
+[01:01:14]   [alpha0.75_T4] ep 2 step  4000/7126  loss=0.2082  ce=0.1480  kl=0.3888  lr=2.33e-05  376s
+[01:01:33]   [alpha0.75_T4] ep 2 step  4200/7126  loss=0.2206  ce=0.1561  kl=0.4144  lr=2.18e-05  395s
+[01:01:51]   [alpha0.75_T4] ep 2 step  4400/7126  loss=0.1961  ce=0.1384  kl=0.3692  lr=2.03e-05  413s
+[01:02:10]   [alpha0.75_T4] ep 2 step  4600/7126  loss=0.2105  ce=0.1485  kl=0.3963  lr=1.89e-05  432s
+[01:02:28]   [alpha0.75_T4] ep 2 step  4800/7126  loss=0.2141  ce=0.1571  kl=0.3850  lr=1.74e-05  450s
+[01:02:47]   [alpha0.75_T4] ep 2 step  5000/7126  loss=0.2031  ce=0.1490  kl=0.3654  lr=1.59e-05  469s
+[01:03:06]   [alpha0.75_T4] ep 2 step  5200/7126  loss=0.2057  ce=0.1522  kl=0.3662  lr=1.44e-05  488s
+[01:03:25]   [alpha0.75_T4] ep 2 step  5400/7126  loss=0.1950  ce=0.1416  kl=0.3550  lr=1.29e-05  507s
+[01:03:43]   [alpha0.75_T4] ep 2 step  5600/7126  loss=0.2017  ce=0.1470  kl=0.3655  lr=1.14e-05  525s
+[01:04:02]   [alpha0.75_T4] ep 2 step  5800/7126  loss=0.1933  ce=0.1414  kl=0.3491  lr=9.90e-06  544s
+[01:04:21]   [alpha0.75_T4] ep 2 step  6000/7126  loss=0.1803  ce=0.1323  kl=0.3241  lr=8.40e-06  563s
+[01:04:39]   [alpha0.75_T4] ep 2 step  6200/7126  loss=0.1904  ce=0.1395  kl=0.3432  lr=6.91e-06  581s
+[01:04:58]   [alpha0.75_T4] ep 2 step  6400/7126  loss=0.1867  ce=0.1408  kl=0.3243  lr=5.42e-06  600s
+[01:05:17]   [alpha0.75_T4] ep 2 step  6600/7126  loss=0.1907  ce=0.1425  kl=0.3355  lr=3.93e-06  619s
+[01:05:35]   [alpha0.75_T4] ep 2 step  6800/7126  loss=0.1773  ce=0.1338  kl=0.3078  lr=2.43e-06  637s
+[01:05:54]   [alpha0.75_T4] ep 2 step  7000/7126  loss=0.1920  ce=0.1481  kl=0.3237  lr=9.40e-07  656s
+[01:06:06]   [alpha0.75_T4] ep 2 step  7126/7126  loss=0.1734  ce=0.1280  kl=0.3094  lr=0.00e+00  668s
+[01:06:08]   [alpha0.75_T4] end of epoch 2: val acc=0.9460
+[01:06:11] == alpha0.75_T4 done in 11.2 min: val acc=0.9460  test acc=0.9476
+[01:06:12] BEST_ALPHA at T=4: 0.25
+[01:06:12] overall best run (val): alpha0.25_T4  val=0.9477  test=0.9468
+[01:06:22] [student_distilbert] test acc=0.9468  test-set time=3.02s (2519/s)  latency p50=6.00ms p95=7.48ms  peak GPU=527MiB  params=67.0M  disk=255.4MiB
+[01:06:22] accuracy_retained_pct = 100.26
+[01:06:22] accuracy_drop_pts = -0.25
+[01:06:22] test_set_speedup_x = 2.01
+[01:06:22] latency_p50_speedup_x = 4.96
+[01:06:22] param_reduction_pct = 38.84
+[01:06:22] disk_reduction_pct = 38.84
+[01:06:22] most degraded class: Business (teacher 0.9137 -> student 0.9111, drop 0.26 pts)
+[01:06:22] Business: 45 test examples teacher-right / student-wrong; student predicted instead: {'World': 13, 'Sports': 2, 'Sci/Tech': 30}
